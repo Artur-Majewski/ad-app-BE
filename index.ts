@@ -3,12 +3,17 @@ import cors from 'cors';
 import 'express-async-errors';
 import rateLimit from 'express-rate-limit';
 import { handleError } from './utils/error';
+import { adRouter } from './routers/ad-router';
 
 const app = express();
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(json());
+app.use(rateLimit({
+	windowMs: 5*60*1000,
+	max: 100
+}))
 
-app.get('/', (req, res) => res.send('hello world'))
+app.use('/ad', adRouter)
 
 app.use(handleError)
 
