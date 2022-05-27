@@ -5,11 +5,21 @@ afterAll(async () => {
 	await pool.end();
 });
 
+const defaultObj = {
+	name: 'Test name',
+	description: 'Test description',
+	url: 'http://test-url.com',
+	price: 0,
+	latitude: 1,
+	longitude: 1,
+	address: 'Warszawa'
+};
+
 test('AdRecord.getOne return data from database for single entry', async () => {
 	const ad = await AdRecord.getOne('test');
 
 	expect(ad).toBeDefined();
-	expect(ad.id).toBe('test');
+	expect(ad.id).toBe('Test');
 	expect(ad.name).toBe('Test');
 	expect(ad.description).toBe('Test description');
 });
@@ -48,14 +58,7 @@ test('AdRecord.getAll return small amount of data', async () => {
 	expect(ads[0].description).toBeUndefined();
 });
 
-const defaultObj = {
-	name: 'Test name',
-	description: 'Test description',
-	url: 'http://test-url.com',
-	price: 0,
-	latitude: 1,
-	longitude: 1,
-};
+
 
 test('AdREcord.isert return new UUID', async () => {
 	const ad = new AdRecord(defaultObj);

@@ -15,8 +15,12 @@ export class AdRecord implements AdEntity {
 	public price: number;
 	public latitude: number;
 	public longitude: number;
+	public address: string;
+
 
 	constructor(obj: NewAdEntity) {
+		console.log('inside constructor: ', obj);
+		
 		if (!obj.name || obj.name.length > 100 || typeof obj.name != 'string') {
 			throw new ValidationError(
 				'The name must not be empty and must not be longer than 100 characters. The name must be of string type.'
@@ -40,6 +44,9 @@ export class AdRecord implements AdEntity {
 		if (typeof obj.latitude != 'number' || typeof obj.longitude != 'number') {
 			throw new ValidationError('Location cannot be found.');
 		}
+		if (obj.address.length > 165 || typeof obj.address != 'string') {
+			throw new ValidationError('The address must not be longer than 165 characters. The URL must be of string type.');
+		}
 
 		this.id = obj.id;
 		this.name = obj.name;
@@ -48,7 +55,9 @@ export class AdRecord implements AdEntity {
 		this.price = obj.price;
 		this.latitude = obj.latitude;
 		this.longitude = obj.longitude;
+		this.address = obj.address;
 	}
+	
 
 	static async getOne(id: string): Promise<AdRecord | null> {
 		const [results] = (await pool.execute(
@@ -82,9 +91,10 @@ export class AdRecord implements AdEntity {
 		} else {
 			throw new Error('Cannot insert object that is already inserted');
 		}
+		console.log('backend ',this)
 
 		await pool.execute(
-			'INSERT INTO `ads`(`id`, `name`, `description`, `url`, `price`, `latitude`, `longitude`) VALUES(:id, :name, :description, :url, :price, :latitude, :longitude)',
+			'INSERT INTO `ads`(`id`, `name`, `description`, `url`, `price`, `latitude`, `longitude`, `address`) VALUES(:id, :name, :description, :url, :price, :latitude, :longitude, :address)',
 			this
 		);
 	}

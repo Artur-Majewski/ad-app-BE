@@ -6,7 +6,7 @@ import { handleError } from './utils/error';
 import { adRouter } from './routers/ad-router';
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000' }));
+app.use(cors({ origin: 'http://localhost:3000', }));
 app.use(json());
 app.use(rateLimit({
 	windowMs: 5*60*1000,

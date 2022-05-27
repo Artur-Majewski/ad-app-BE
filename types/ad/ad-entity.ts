@@ -11,6 +11,15 @@ export interface SimpleAdEntity {
 export interface AdEntity extends SimpleAdEntity {
 	name: string;
 	description: string;
-	price: number;
 	url: string;
+	price: number;
+	address: string;
+}
+
+export interface AdFormEntity {
+	name: string;
+	description: string;
+	url: string;
+	price: number;
+	address: string;
 }

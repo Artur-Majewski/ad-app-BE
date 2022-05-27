@@ -15,7 +15,7 @@ adRouter
 	})
 
 	.post('/', async (req, res) => {
-		const ad = new AdRecord(req.body);
+		const ad = new AdRecord({...req.body, price: Number(req.body.price)});
 		await ad.insert();
 		res.json(ad);
 	});
