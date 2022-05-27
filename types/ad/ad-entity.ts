@@ -6,6 +6,7 @@ export interface SimpleAdEntity {
 	id: string;
 	latitude: number;
 	longitude: number;
+	address: string;
 }
 
 export interface AdEntity extends SimpleAdEntity {
@@ -13,7 +14,6 @@ export interface AdEntity extends SimpleAdEntity {
 	description: string;
 	url: string;
 	price: number;
-	address: string;
 }
 
 export interface AdFormEntity {

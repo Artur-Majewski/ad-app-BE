@@ -79,9 +79,9 @@ export class AdRecord implements AdEntity {
 		)) as AdRecordResults;
 
 		return results.map((ad) => {
-			const { id, latitude, longitude } = ad;
+			const { id, latitude, longitude, address } = ad;
 
-			return { id, latitude, longitude };
+			return { id, latitude, longitude, address };
 		});
 	}
 
