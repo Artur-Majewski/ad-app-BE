@@ -14,6 +14,11 @@ adRouter
 		res.json(locAndAds);
 	})
 
+	.get('/search-list-of-local-ad/:lat?/:lot?', async (req, res) => {
+		const locAndAds = await AdRecord.findAllLocalAds(Number(req.params.lat), Number(req.params.lot));
+		res.json(locAndAds);
+	})
+
 	.get('/:id?', async (req, res) => {
 		const ad = await AdRecord.getOne(req.params.id);
 		res.json(ad);

@@ -1,6 +1,6 @@
 import { FieldPacket } from 'mysql2';
 import { type } from 'os';
-import { AdEntity, NewAdEntity, SimpleAdEntity } from '../types';
+import { AdEntity, AdFormEntity, NewAdEntity, SignleAdElement, SimpleAdEntity } from '../types';
 import { pool } from '../utils/db';
 import { ValidationError } from '../utils/error';
 import { v4 as uuid } from 'uuid';
@@ -77,8 +77,8 @@ export class AdRecord implements AdEntity {
 		)) as AdRecordResults;
 
 		return results.map((ad) => {
-			const { id, latitude, longitude, address } = ad;
-			return { id, latitude, longitude, address };
+			const { id, latitude, longitude } = ad;
+			return { id, latitude, longitude };
 		});
 	}
 
@@ -92,10 +92,21 @@ export class AdRecord implements AdEntity {
 		)) as AdRecordResults;
 
 		return results.map((ad) => {
-			const { id, latitude, longitude, address } = ad;
-
-			return { id, latitude, longitude, address };
+			const { id, latitude, longitude } = ad;
+			return { id, latitude, longitude };
 		});
+	}
+
+	static async findAllLocalAds(lat: number, lot: number): Promise<SignleAdElement[] | null> {
+		const [results] = (await pool.execute(
+			'SELECT * FROM `ads` WHERE latitude BETWEEN :latitude - 0.1 AND :latitude + 0.1 AND longitude BETWEEN :longitude - 0.1 AND :longitude + 0.1',
+			{
+				latitude: lat,
+				longitude: lot,
+			}
+		)) as AdRecordResults;
+
+		return results.length === 0 ? null : results.map(ad => new AdRecord(ad) )
 	}
 
 	async insert(): Promise<void> {
