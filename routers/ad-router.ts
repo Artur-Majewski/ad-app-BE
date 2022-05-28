@@ -9,6 +9,11 @@ adRouter
 		res.json(ads);
 	})
 
+	.get('/search-by-loc/:lat?/:lot?', async (req, res) => {
+		const locAndAds = await AdRecord.findGeoLoc(Number(req.params.lat), Number(req.params.lot));
+		res.json(locAndAds);
+	})
+
 	.get('/:id?', async (req, res) => {
 		const ad = await AdRecord.getOne(req.params.id);
 		res.json(ad);

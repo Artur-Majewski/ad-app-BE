@@ -17,10 +17,7 @@ export class AdRecord implements AdEntity {
 	public longitude: number;
 	public address: string;
 
-
 	constructor(obj: NewAdEntity) {
-		console.log('inside constructor: ', obj);
-		
 		if (!obj.name || obj.name.length > 100 || typeof obj.name != 'string') {
 			throw new ValidationError(
 				'The name must not be empty and must not be longer than 100 characters. The name must be of string type.'
@@ -45,7 +42,9 @@ export class AdRecord implements AdEntity {
 			throw new ValidationError('Location cannot be found.');
 		}
 		if (obj.address.length > 165 || typeof obj.address != 'string') {
-			throw new ValidationError('The address must not be longer than 165 characters. The URL must be of string type.');
+			throw new ValidationError(
+				'The address must not be longer than 165 characters. The URL must be of string type.'
+			);
 		}
 
 		this.id = obj.id;
@@ -57,7 +56,6 @@ export class AdRecord implements AdEntity {
 		this.longitude = obj.longitude;
 		this.address = obj.address;
 	}
-	
 
 	static async getOne(id: string): Promise<AdRecord | null> {
 		const [results] = (await pool.execute(
@@ -80,6 +78,21 @@ export class AdRecord implements AdEntity {
 
 		return results.map((ad) => {
 			const { id, latitude, longitude, address } = ad;
+			return { id, latitude, longitude, address };
+		});
+	}
+
+	static async findGeoLoc(lat: number, lot: number): Promise<SimpleAdEntity[]> {
+		const [results] = (await pool.execute(
+			'SELECT * FROM `ads` WHERE latitude BETWEEN :latitude - 0.1 AND :latitude + 0.1 AND longitude BETWEEN :longitude - 0.1 AND :longitude + 0.1',
+			{
+				latitude: lat,
+				longitude: lot,
+			}
+		)) as AdRecordResults;
+
+		return results.map((ad) => {
+			const { id, latitude, longitude, address } = ad;
 
 			return { id, latitude, longitude, address };
 		});
@@ -91,8 +104,6 @@ export class AdRecord implements AdEntity {
 		} else {
 			throw new Error('Cannot insert object that is already inserted');
 		}
-		console.log('backend ',this)
-
 		await pool.execute(
 			'INSERT INTO `ads`(`id`, `name`, `description`, `url`, `price`, `latitude`, `longitude`, `address`) VALUES(:id, :name, :description, :url, :price, :latitude, :longitude, :address)',
 			this
